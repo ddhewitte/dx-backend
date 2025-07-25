@@ -1,6 +1,7 @@
+import { Role } from '../../../generated/prisma';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class RegisterDto {
+export class RegisterMap {
 
     @IsString()
     @IsOptional()
@@ -15,5 +16,5 @@ export class RegisterDto {
 
     @IsString()
     @IsOptional()
-    role: string;
+    role: Role;
 }
