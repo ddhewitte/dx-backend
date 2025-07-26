@@ -5,6 +5,7 @@ import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { jwt_config } from 'src/config/jwt_config';
 import { LoginMap } from './map/login.map';
+import { UpdateMap } from './map/update.map';
 
 
 @Injectable()
@@ -73,4 +74,64 @@ export class AuthService {
             data: createUser
         }
     }
+
+    //Detail user
+    async profile(user_id: number) {
+        const detailProfile = await this.prisma.user.findUnique({
+            where: {
+                id: user_id
+            },
+            select: {
+                id: true,
+                user: true,
+                role: true
+            }
+        })
+        if (detailProfile) {
+            return {
+                statusCode: 200,
+                message: 'User detail',
+                data: detailProfile
+            }
+        }
+    }
+
+    //Show all user
+    async showAllUser() {
+        const allUser = await this.prisma.user.findMany({
+            select: {
+                id: true,
+                user: true,
+                role: true
+            }
+        })
+        if (!allUser) {
+            throw new HttpException('User empty', HttpStatus.NOT_FOUND)
+        }
+        return {
+            statusCode: 200,
+            message: 'All User',
+            data: allUser
+        }
+    }
+
+    //Update
+    async updateUser(userId: number, data: UpdateMap) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId }
+        })
+        if (!user) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+        const updatedUser = await this.prisma.user.update({
+            where: { id: userId },
+            data: data
+        })
+        return {
+            statusCode: 200,
+            message: 'User updated successfully',
+            data: updatedUser
+        }
+    }
+
 }
