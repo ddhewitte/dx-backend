@@ -99,6 +99,9 @@ export class AuthService {
     //Show all user
     async showAllUser() {
         const allUser = await this.prisma.user.findMany({
+            where:{
+                deleted_at: null
+            },
             select: {
                 id: true,
                 user: true,
