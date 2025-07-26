@@ -1,17 +1,61 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterMap } from './map/register.map';
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { jwt_config } from 'src/config/jwt_config';
+import { LoginMap } from './map/login.map';
+
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService, private jwtService: JwtService) { }
+
+    //generateJWT
+    generateJWT(payload: any){
+        return this.jwtService.sign(payload, {
+            secret: jwt_config.secret,
+            expiresIn: jwt_config.expired
+        })
+    }
+
+    //login
+    async login(data: LoginMap) {
+        const checkUserExists = await this.prisma.user.findFirst({
+            where: {
+                user: data.user
+            }
+        })
+        if (!checkUserExists) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+        const checkPassword = await compare(data.password, checkUserExists.
+            password)
+        if (checkPassword) {
+            const accessToken = this.generateJWT({
+                sub: checkUserExists.id,
+                name: checkUserExists.user,
+                role: checkUserExists.role
+            })
+            return {
+                statusCode: 200,
+                message: 'Login Successfully',
+                accessToken: accessToken
+            }
+        } else {
+            throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED)
+        }
+    }
+
+    
+    //register
     async register(data: RegisterMap) {
         const checkUserExists = await this.prisma.user.findFirst({
             where: {
                 user: data.user
             }
         })
+
         if (checkUserExists) {
             throw new HttpException('User Already exists', HttpStatus.FOUND)
         }
