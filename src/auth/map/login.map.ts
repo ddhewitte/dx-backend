@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
-export class LoginDto {
+export class LoginMap {
     @IsNotEmpty()
-    @IsEmail()
+    @IsString()
     user: string;
     
     @IsNotEmpty()
