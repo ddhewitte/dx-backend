@@ -137,4 +137,25 @@ export class AuthService {
         }
     }
 
+    //Delete User
+    async deleteUser(userId: number) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId }
+        })
+        if (!user) {
+            throw new HttpException('user not found', HttpStatus.NOT_FOUND)
+        }
+        if (user.deleted_at) {
+            throw new HttpException('user already deleted', HttpStatus.BAD_REQUEST)
+        }
+        await this.prisma.user.update({
+            where: { id: userId },
+            data: { deleted_at: new Date() }
+        })
+        return {
+            statusCode: 200,
+            message: 'User deleted successfully'
+        }
+    }
+
 }

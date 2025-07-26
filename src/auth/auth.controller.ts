@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Patch, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Patch, Param, Delete,  UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterMap } from './map/register.map';
 import { LoginMap } from './map/login.map';
@@ -40,7 +40,16 @@ export class AuthController {
     @Patch('users/:id')
     async updateUser(@Param('id') id: string, @Body() data: UpdateMap){
         const userId = parseInt(id)
-        return await this.authService.updateUser(userId, data)
+        return
+         await this.authService.updateUser(userId, data)
     }
+
+    @UseGuards(AuthGuard)
+    @Delete('users/:id')
+    async deleteUser(@Param('id') id: string){
+        const userId = parseInt(id,10)
+        return await this.authService.deleteUser(userId)
+    }
+
 
 }
