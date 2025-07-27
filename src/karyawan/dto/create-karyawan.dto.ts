@@ -1,4 +1,4 @@
-import { Role, Jabatan } from '../../../generated/prisma';
+import { Jabatan } from '../../../generated/prisma';
 import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsEmail, Min } from "class-validator";
 
 export class CreateKaryawanDto {
