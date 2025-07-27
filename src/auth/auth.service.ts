@@ -126,6 +126,8 @@ export class AuthService {
         if (!user) {
             throw new HttpException('user not found', HttpStatus.NOT_FOUND)
         }
+        
+        data.password = await hash(data.password, 12)
         const updatedUser = await this.prisma.user.update({
             where: { id: userId },
             data: data

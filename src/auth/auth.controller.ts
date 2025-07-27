@@ -40,8 +40,7 @@ export class AuthController {
     @Patch('users/:id')
     async updateUser(@Param('id') id: string, @Body() data: UpdateMap){
         const userId = parseInt(id)
-        return
-         await this.authService.updateUser(userId, data)
+        return await this.authService.updateUser(userId, data)
     }
 
     @UseGuards(AuthGuard)

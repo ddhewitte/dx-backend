@@ -3,15 +3,11 @@ import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validat
 export class UpdateMap {
     @IsOptional()
     @IsString()
-    name: string;
-
-    @IsOptional()
-    @IsEmail()
-    email: string;
+    user: string;
 
     @IsString()
     @IsOptional()
-    phone: string;
+    password: string;
 
     @IsEnum(Role, { message: "role must be Admin/User" })
     @IsOptional()
