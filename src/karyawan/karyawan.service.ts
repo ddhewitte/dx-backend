@@ -1,12 +1,17 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Inject } from '@nestjs/common';
 import { CreateKaryawanDto } from './dto/create-karyawan.dto';
 import { UpdateKaryawanDto } from './dto/update-karyawan.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Jabatan } from '../../generated/prisma';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class KaryawanService {
-  constructor(private prisma: PrismaService){}
+  constructor(
+    private prisma: PrismaService,
+    @Inject('DATA_STREAM_RABBIT_MQ') 
+    private readonly client: ClientProxy,
+  ){}
 
   //Input karyawan with images/multer
   async create(createKaryawanDto: CreateKaryawanDto, file: Express.Multer.File) {
@@ -125,6 +130,14 @@ export class KaryawanService {
       where: { id: id },
       data: updatedData
     })
+
+    // Sent to Rabbit
+    this.client.emit('karyawan.updated', {
+      id,
+      updatedAt: new Date(),
+      ...updatedData,
+    });
+
     return {
       statusCode: 200,
       message: 'Karyawan updated successfully',
