@@ -72,7 +72,7 @@ export class KaryawanService {
     }
   }
 
-  //Detail karyawan
+  //Detail karyawan by id
   async findOne(id: number) {
     const findKaryawanId = await this.prisma.karyawan.findFirst({
       where: {
@@ -86,6 +86,23 @@ export class KaryawanService {
       statusCode: 200,
       message: 'Karyawan found',
       data: findKaryawanId
+    }
+  }
+
+  //Detail karyawan by user id
+  async findOneByUserId(id: number) {
+    const findKaryawanIdByUser = await this.prisma.karyawan.findFirst({
+      where: {
+        userId: id
+      }
+    })
+    if (!findKaryawanIdByUser) {
+      throw new HttpException('Karyawan not found', HttpStatus.NOT_FOUND)
+    }
+    return {
+      statusCode: 200,
+      message: 'Karyawan found',
+      data: findKaryawanIdByUser
     }
   }
 

@@ -27,7 +27,8 @@ export class AbsensiController {
     //Detail absensi by karyawanId
     @UseGuards(new AuthGuard(['ADMIN', 'STAFF']))
     @Get(':id')
-    async findOne(@Param('id') id: string) {
-        return await this.absensiService.findOne(+id);
+    async findAllByKaryawan(@Param('id') id: string) {
+        return await this.absensiService.findByKaryawanId(+id);
     }
+
 }
