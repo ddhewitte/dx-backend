@@ -33,12 +33,11 @@ export class AbsensiService {
     //Get all absensi
     async findAll() {
         const allAbsensi = await this.prisma.absensi.findMany({
-            select: {
-                id: true,
-                tanggal: true,
-                waktu: true,
-                status: true,
-                karyawanId: true,
+            include: {
+                karyawan: true,
+            },
+            orderBy: {
+                tanggal: 'desc',
             },
         });
 
