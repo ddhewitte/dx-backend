@@ -1,4 +1,4 @@
 export const jwt_config = {
  secret: 'secretKey',
- expired: 3600
+ expired: 10800
 }
