@@ -43,6 +43,12 @@ export class KaryawanController {
   }
 
   @UseGuards(new AuthGuard(['ADMIN', 'STAFF']))
+  @Get('user/:userId')
+  async findByUserId(@Param('userId') userId: string) {
+    return await this.karyawanService.findOneByUserId(+userId);
+  }
+
+  @UseGuards(new AuthGuard(['ADMIN', 'STAFF']))
   @Patch(':id')
   @UseInterceptors(FileInterceptor('foto'))
   async update(

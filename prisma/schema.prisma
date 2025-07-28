@@ -69,4 +69,5 @@ model Absensi {
   //Absensi relasi -> ke karyawan
   karyawanId Int
   karyawan Karyawan @relation(fields: [karyawanId], references: [id])
+
 }

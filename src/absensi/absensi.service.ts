@@ -53,19 +53,24 @@ export class AbsensiService {
     }
 
     //detail absensi by user
-    async findOne(id: number) {
-        const findAbsensiId = await this.prisma.absensi.findFirst({
+    async findByKaryawanId(id: number) {
+        const absensiList = await this.prisma.absensi.findMany({
             where: {
-                karyawanId: id,
+            karyawanId: id,
+            },
+            orderBy: {
+            tanggal: 'desc', // optional: urutkan terbaru
             },
         });
-        if (!findAbsensiId) {
+
+        if (!absensiList || absensiList.length === 0) {
             throw new HttpException('Absensi not found', HttpStatus.NOT_FOUND);
         }
+
         return {
             statusCode: 200,
             message: 'Absensi found',
-            data: findAbsensiId,
+            data: absensiList,
         };
     }
 }
